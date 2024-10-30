@@ -11,55 +11,46 @@ app = Flask(__name__)
 
 def generate_plots(N, mu, sigma2, S):
 
-    # STEP 1
-    # TODO 1: Generate a random dataset X of size N with values between 0 and 1
-    # and a random dataset Y with normal additive error (mean mu, variance sigma^2).
-    # Hint: Use numpy's random's functions to generate values for X and Y
-    X = None  # Replace with code to generate random values for X
-    Y = None  # Replace with code to generate random values for Y with specified mean and variance
+    # Generate a random dataset X of size N with values between 0 and 1 and a random dataset Y with normal additive error (mean mu, variance sigma^2).
 
-    # TODO 2: Fit a linear regression model to X and Y
-    # Hint: Use Scikit Learn
-    model = None
-    None  # Replace with code to fit the model
-    slope = None  # Replace with code to extract slope from the fitted model
-    intercept = None  # Replace with code to extract intercept from the fitted model
+    X = np.random.uniform(0, 1, N)
+    Y = np.random.normal(mu, np.sqrt(sigma2), N)
 
-    # TODO 3: Generate a scatter plot of (X, Y) with the fitted regression line
-    # Hint: Use Matplotlib
-    # Label the x-axis as "X" and the y-axis as "Y".
-    # Add a title showing the regression line equation using the slope and intercept values.
-    # Finally, save the plot to "static/plot1.png" using plt.savefig()
+    # Fit a linear regression model to X and Y
+
+    model = LinearRegression()
+    model.fit(X.reshape(-1, 1), Y)
+    slope = model.coef_[0] 
+    intercept = model.intercept_  
+
+    # Generate a scatter plot of (X, Y) with the fitted regression line
     
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X, Y)
+    plt.plot(X, model.predict(X.reshape(-1, 1)), 'r-')
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title(f'Regression Line Equation: Y = {intercept:.2f} + {slope:.2f}X')
     plot1_path = "static/plot1.png"
-    # Replace the above TODO 3 block with code to generate and save the plot
+    plt.savefig(plot1_path)
+    plt.close()
 
-    
-    # Step 2: Run S simulations and create histograms of slopes and intercepts
+    # Run S simulations and create histograms of slopes and intercepts
+    slopes = []
+    intercepts = []
 
-    # TODO 1: Initialize empty lists for slopes and intercepts
-    # Hint: You will store the slope and intercept of each simulation's linear regression here.
-    slopes = []  # Replace with code to initialize empty list
-    intercepts = []  # Replace with code to initialize empty list
-
-    # TODO 2: Run a loop S times to generate datasets and calculate slopes and intercepts
-    # Hint: For each iteration, create random X and Y values using the provided parameters
     for _ in range(S):
-        # TODO: Generate random X values with size N between 0 and 1
-        X_sim = None  # Replace with code to generate X values
+        X_sim = np.random.uniform(0, 1, N)
+        Y_sim = np.random.normal(mu, np.sqrt(sigma2), N)
 
-        # TODO: Generate Y values with normal additive error (mean mu, variance sigma^2)
-        Y_sim = None  # Replace with code to generate Y values
+        sim_model = LinearRegression()
+        sim_model.fit(X_sim.reshape(-1, 1), Y_sim)
 
-        # TODO: Fit a linear regression model to X_sim and Y_sim
-        sim_model = None  # Initialize model
-        None  # Replace with code to fit model
-
-        # TODO: Append the slope and intercept of the model to slopes and intercepts lists
-        slopes.append(None)  # Replace None with code to append slope
-        intercepts.append(None)  # Replace None with code to append intercept
+        slopes.append(sim_model.coef_[0])
+        intercepts.append(sim_model.intercept_)
 
     # Plot histograms of slopes and intercepts
+
     plt.figure(figsize=(10, 5))
     plt.hist(slopes, bins=20, alpha=0.5, color="blue", label="Slopes")
     plt.hist(intercepts, bins=20, alpha=0.5, color="orange", label="Intercepts")
