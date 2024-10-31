@@ -25,7 +25,7 @@ def generate_plots(N, mu, sigma2, S):
 
     # Generate a scatter plot of (X, Y) with the fitted regression line
     
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(10, 6))
     plt.scatter(X, Y)
     plt.plot(X, model.predict(X.reshape(-1, 1)), 'r-')
     plt.xlabel('X')
@@ -36,18 +36,19 @@ def generate_plots(N, mu, sigma2, S):
     plt.close()
 
     # Run S simulations and create histograms of slopes and intercepts
+    
     slopes = []
     intercepts = []
 
     for _ in range(S):
-        X_sim = np.random.uniform(0, 1, N)
-        Y_sim = np.random.normal(mu, np.sqrt(sigma2), N)
+        X_simulated = np.random.uniform(0, 1, N)
+        Y_simulated = np.random.normal(mu, np.sqrt(sigma2), N)
 
-        sim_model = LinearRegression()
-        sim_model.fit(X_sim.reshape(-1, 1), Y_sim)
+        simulated_model = LinearRegression()
+        simulated_model.fit(X_simulated.reshape(-1, 1), Y_simulated)
 
-        slopes.append(sim_model.coef_[0])
-        intercepts.append(sim_model.intercept_)
+        slopes.append(simulated_model.coef_[0])
+        intercepts.append(simulated_model.intercept_)
 
     # Plot histograms of slopes and intercepts
 
